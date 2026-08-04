@@ -1,0 +1,6 @@
+{
+  "name": "SmartBiz",
+  "description": "Modern Business Billing & Inventory application built with Clean Architecture, Material 3, Room database, and Jetpack Compose.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
