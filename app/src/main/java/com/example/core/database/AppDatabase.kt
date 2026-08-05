@@ -4,32 +4,71 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.core.constants.AppConstants
+import com.example.core.database.dao.AuditLogDao
+import com.example.core.database.dao.EntityHistoryDao
+import com.example.core.database.dao.SecurityEventDao
+import com.example.core.database.dao.SecurityPolicyDao
+import com.example.core.database.dao.NotificationDao
+import com.example.core.database.dao.ReminderDao
+import com.example.core.database.dao.NotificationPreferenceDao
+import com.example.core.database.dao.ScheduledTaskDao
 import com.example.core.database.dao.CashBookDao
 import com.example.core.database.dao.CategoryDao
 import com.example.core.database.dao.CustomerDao
 import com.example.core.database.dao.CustomerLedgerDao
+import com.example.core.database.dao.DeviceDao
 import com.example.core.database.dao.ExpenseCategoryDao
 import com.example.core.database.dao.ExpenseDao
+import com.example.core.database.dao.GlobalSearchDao
 import com.example.core.database.dao.IncomeDao
 import com.example.core.database.dao.InventoryDao
 import com.example.core.database.dao.InvoiceDao
+import com.example.core.database.dao.LoginHistoryDao
 import com.example.core.database.dao.PurchaseDao
+import com.example.core.database.dao.ReportDao
+import com.example.core.database.dao.SessionDao
 import com.example.core.database.dao.SupplierDao
+import com.example.core.database.dao.UserDao
+import com.example.core.database.dao.PermissionDao
+import com.example.core.database.dao.RoleDao
+import com.example.core.database.dao.RolePermissionDao
+import com.example.core.database.dao.UserRoleDao
+import com.example.core.database.entity.AuditLogEntity
+import com.example.core.database.entity.EntityHistoryEntity
+import com.example.core.database.entity.SecurityEventEntity
+import com.example.core.database.entity.SecurityPolicyEntity
+import com.example.core.database.entity.NotificationEntity
+import com.example.core.database.entity.ReminderEntity
+import com.example.core.database.entity.NotificationPreferenceEntity
+import com.example.core.database.entity.ScheduledTaskEntity
+import com.example.core.database.entity.NotificationEntity
+import com.example.core.database.entity.ReminderEntity
+import com.example.core.database.entity.NotificationPreferenceEntity
+import com.example.core.database.entity.ScheduledTaskEntity
+import com.example.core.database.entity.PermissionEntity
+import com.example.core.database.entity.RoleEntity
+import com.example.core.database.entity.RolePermissionCrossRef
+import com.example.core.database.entity.UserRoleCrossRef
 import com.example.core.database.entity.CashBookEntryEntity
 import com.example.core.database.entity.CategoryEntity
 import com.example.core.database.entity.CustomerEntity
 import com.example.core.database.entity.CustomerLedgerEntity
+import com.example.core.database.entity.DeviceEntity
 import com.example.core.database.entity.ExpenseCategoryEntity
 import com.example.core.database.entity.ExpenseEntity
 import com.example.core.database.entity.IncomeEntity
 import com.example.core.database.entity.InventoryItemEntity
 import com.example.core.database.entity.InvoiceEntity
 import com.example.core.database.entity.InvoiceItemEntity
+import com.example.core.database.entity.LoginHistoryEntity
 import com.example.core.database.entity.PurchaseEntity
 import com.example.core.database.entity.PurchaseItemEntity
+import com.example.core.database.entity.SessionEntity
 import com.example.core.database.entity.SupplierEntity
+import com.example.core.database.entity.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +87,23 @@ import kotlinx.coroutines.launch
         ExpenseCategoryEntity::class,
         ExpenseEntity::class,
         IncomeEntity::class,
-        CashBookEntryEntity::class
+        CashBookEntryEntity::class,
+        UserEntity::class,
+        SessionEntity::class,
+        DeviceEntity::class,
+        LoginHistoryEntity::class,
+        RoleEntity::class,
+        PermissionEntity::class,
+        RolePermissionCrossRef::class,
+        UserRoleCrossRef::class,
+        AuditLogEntity::class,
+        EntityHistoryEntity::class,
+        SecurityEventEntity::class,
+        SecurityPolicyEntity::class,
+        NotificationEntity::class,
+        ReminderEntity::class,
+        NotificationPreferenceEntity::class,
+        ScheduledTaskEntity::class
     ],
     version = AppConstants.DATABASE_VERSION,
     exportSchema = false
@@ -65,10 +120,180 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
     abstract fun incomeDao(): IncomeDao
     abstract fun cashBookDao(): CashBookDao
+    abstract fun reportDao(): ReportDao
+    abstract fun globalSearchDao(): GlobalSearchDao
+    abstract fun userDao(): UserDao
+    abstract fun sessionDao(): SessionDao
+    abstract fun deviceDao(): DeviceDao
+    abstract fun loginHistoryDao(): LoginHistoryDao
+    abstract fun roleDao(): RoleDao
+    abstract fun permissionDao(): PermissionDao
+    abstract fun rolePermissionDao(): RolePermissionDao
+    abstract fun userRoleDao(): UserRoleDao
+    abstract fun auditLogDao(): AuditLogDao
+    abstract fun entityHistoryDao(): EntityHistoryDao
+    abstract fun securityEventDao(): SecurityEventDao
+    abstract fun securityPolicyDao(): SecurityPolicyDao
+    abstract fun notificationDao(): NotificationDao
+    abstract fun reminderDao(): ReminderDao
+    abstract fun notificationPreferenceDao(): NotificationPreferenceDao
+    abstract fun scheduledTaskDao(): ScheduledTaskDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
+
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `users` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `userId` TEXT NOT NULL,
+                        `fullName` TEXT NOT NULL,
+                        `businessName` TEXT NOT NULL,
+                        `mobileNumber` TEXT NOT NULL,
+                        `email` TEXT NOT NULL,
+                        `roleId` TEXT NOT NULL,
+                        `pinHash` TEXT NOT NULL,
+                        `profileImage` TEXT NOT NULL,
+                        `status` TEXT NOT NULL,
+                        `lastLogin` INTEGER NOT NULL,
+                        `createdDate` INTEGER NOT NULL,
+                        `updatedDate` INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_users_mobileNumber` ON `users` (`mobileNumber`)")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_users_userId` ON `users` (`userId`)")
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `sessions` (
+                        `sessionId` TEXT NOT NULL PRIMARY KEY,
+                        `userId` TEXT NOT NULL,
+                        `loginTime` INTEGER NOT NULL,
+                        `expiryTime` INTEGER NOT NULL,
+                        `deviceId` TEXT NOT NULL,
+                        `deviceName` TEXT NOT NULL,
+                        `appVersion` TEXT NOT NULL,
+                        `sessionStatus` TEXT NOT NULL,
+                        `authToken` TEXT NOT NULL,
+                        `refreshToken` TEXT NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_sessions_userId` ON `sessions` (`userId`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_sessions_sessionStatus` ON `sessions` (`sessionStatus`)")
+            }
+        }
+
+        private val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `displayName` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `designation` TEXT NOT NULL DEFAULT 'Business Owner'")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `alternateNumber` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `dob` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `gender` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `languagePreference` TEXT NOT NULL DEFAULT 'en'")
+                db.execSQL("ALTER TABLE `users` ADD COLUMN `timeZone` TEXT NOT NULL DEFAULT 'UTC'")
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `devices` (
+                        `deviceId` TEXT NOT NULL PRIMARY KEY,
+                        `userId` TEXT NOT NULL,
+                        `deviceName` TEXT NOT NULL,
+                        `androidVersion` TEXT NOT NULL,
+                        `appVersion` TEXT NOT NULL,
+                        `deviceIdentifier` TEXT NOT NULL,
+                        `lastLoginTime` INTEGER NOT NULL,
+                        `isTrusted` INTEGER NOT NULL,
+                        `registeredDate` INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_devices_userId` ON `devices` (`userId`)")
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `login_history` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `userId` TEXT NOT NULL,
+                        `action` TEXT NOT NULL,
+                        `status` TEXT NOT NULL,
+                        `details` TEXT NOT NULL,
+                        `deviceId` TEXT NOT NULL,
+                        `deviceName` TEXT NOT NULL,
+                        `timestamp` INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_login_history_userId` ON `login_history` (`userId`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_login_history_timestamp` ON `login_history` (`timestamp`)")
+            }
+        }
+
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `roles` (
+                        `roleId` TEXT NOT NULL PRIMARY KEY,
+                        `roleName` TEXT NOT NULL,
+                        `roleCode` TEXT NOT NULL,
+                        `description` TEXT NOT NULL DEFAULT '',
+                        `isSystemRole` INTEGER NOT NULL DEFAULT 1,
+                        `isCustomRole` INTEGER NOT NULL DEFAULT 0,
+                        `createdAt` INTEGER NOT NULL DEFAULT 0,
+                        `updatedAt` INTEGER NOT NULL DEFAULT 0
+                    )
+                    """.trimIndent()
+                )
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `permissions` (
+                        `permissionId` TEXT NOT NULL PRIMARY KEY,
+                        `permissionCode` TEXT NOT NULL,
+                        `permissionName` TEXT NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `description` TEXT NOT NULL DEFAULT '',
+                        `isSensitive` INTEGER NOT NULL DEFAULT 0,
+                        `requiresPinConfirmation` INTEGER NOT NULL DEFAULT 0
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_permissions_permissionCode` ON `permissions` (`permissionCode`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_permissions_category` ON `permissions` (`category`)")
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `role_permission_cross_ref` (
+                        `roleId` TEXT NOT NULL,
+                        `permissionId` TEXT NOT NULL,
+                        PRIMARY KEY(`roleId`, `permissionId`)
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_role_permission_cross_ref_roleId` ON `role_permission_cross_ref` (`roleId`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_role_permission_cross_ref_permissionId` ON `role_permission_cross_ref` (`permissionId`)")
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `user_role_cross_ref` (
+                        `userId` TEXT NOT NULL,
+                        `roleId` TEXT NOT NULL,
+                        `assignedAt` INTEGER NOT NULL DEFAULT 0,
+                        `assignedBy` TEXT NOT NULL DEFAULT 'SYSTEM',
+                        PRIMARY KEY(`userId`, `roleId`)
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_user_role_cross_ref_userId` ON `user_role_cross_ref` (`userId`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_user_role_cross_ref_roleId` ON `user_role_cross_ref` (`roleId`)")
+            }
+        }
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -77,6 +302,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     AppConstants.DATABASE_NAME
                 )
+                    .addMigrations(MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
                     .addCallback(DatabaseCallback())
                     .fallbackToDestructiveMigration(true)
                     .fallbackToDestructiveMigrationOnDowngrade(true)
@@ -92,6 +318,21 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE?.let { database ->
                     CoroutineScope(Dispatchers.IO).launch {
                         seedDatabase(database)
+                    }
+                }
+            }
+
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
+                INSTANCE?.let { database ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        RbacSeedHelper.seedRbacIfEmpty(
+                            database.roleDao(),
+                            database.permissionDao(),
+                            database.rolePermissionDao(),
+                            database.userRoleDao(),
+                            database.userDao()
+                        )
                     }
                 }
             }

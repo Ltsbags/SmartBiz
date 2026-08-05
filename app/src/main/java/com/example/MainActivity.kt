@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -21,6 +23,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.core.constants.NavRoutes
+import com.example.features.auth.AuthScreen
+import com.example.features.auth.AuthViewModel
 import com.example.features.customers.CustomerScreen
 import com.example.features.customers.CustomerViewModel
 import com.example.features.dashboard.DashboardScreen
@@ -46,6 +50,12 @@ import com.example.features.purchases.PurchaseScreen
 import com.example.features.purchases.PurchaseViewModel
 import com.example.features.suppliers.SupplierScreen
 import com.example.features.suppliers.SupplierViewModel
+import com.example.features.reports.ReportsScreen
+import com.example.features.reports.ReportsViewModel
+import com.example.features.settings.SettingsScreen
+import com.example.features.settings.SettingsViewModel
+import com.example.features.search.GlobalSearchScreen
+import com.example.features.search.GlobalSearchViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +75,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SmartBizApp(repoProvider: AppRepositoryProvider) {
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModel.Factory(repoProvider.authRepository, context)
+    )
+    val authState by authViewModel.uiState.collectAsState()
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: NavRoutes.DASHBOARD
@@ -75,47 +91,55 @@ fun SmartBizApp(repoProvider: AppRepositoryProvider) {
 
     val businessName = remember { repoProvider.settingsRepository.getBusinessName() }
 
-    AppShell(
-        currentRoute = currentRoute,
-        onNavigate = { route ->
-            navController.navigate(route) {
-                popUpTo(NavRoutes.DASHBOARD) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
+    if (!authState.isAuthenticated && !authState.isCheckingSession) {
+        AuthScreen(
+            viewModel = authViewModel,
+            onAuthenticated = {
+                authViewModel.checkSession()
             }
-        },
-        snackbarHostState = snackbarHostState,
-        topBar = {
-            CommercialAppBar(
-                businessName = businessName,
-                currentDateText = "Today",
-                notificationCount = 3,
-                onSearchClick = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Search feature active across invoices & products")
-                    }
-                },
-                onNotificationClick = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("3 new store alerts: 2 low stock items, 1 payment received")
-                    }
-                },
-                onProfileClick = {
-                    navController.navigate(NavRoutes.SETTINGS) {
-                        popUpTo(NavRoutes.DASHBOARD) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+        )
+    } else {
+        AppShell(
+            currentRoute = currentRoute,
+            onNavigate = { route ->
+                navController.navigate(route) {
+                    popUpTo(NavRoutes.DASHBOARD) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
-            )
-        },
-        isLoadingOverlayVisible = isLoadingOverlay
-    ) { paddingModifier ->
-        NavHost(
-            navController = navController,
-            startDestination = NavRoutes.DASHBOARD,
-            modifier = paddingModifier.fillMaxSize()
-        ) {
+            },
+            snackbarHostState = snackbarHostState,
+            topBar = {
+                CommercialAppBar(
+                    businessName = authState.currentUser?.businessName ?: businessName,
+                    currentDateText = "Today",
+                    notificationCount = 3,
+                    onSearchClick = {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Search feature active across invoices & products")
+                        }
+                    },
+                    onNotificationClick = {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("3 new store alerts: 2 low stock items, 1 payment received")
+                        }
+                    },
+                    onProfileClick = {
+                        navController.navigate(NavRoutes.SETTINGS) {
+                            popUpTo(NavRoutes.DASHBOARD) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            },
+            isLoadingOverlayVisible = isLoadingOverlay
+        ) { paddingModifier ->
+            NavHost(
+                navController = navController,
+                startDestination = NavRoutes.DASHBOARD,
+                modifier = paddingModifier.fillMaxSize()
+            ) {
             composable(NavRoutes.DASHBOARD) {
                 val viewModel: DashboardViewModel = viewModel(
                     factory = DashboardViewModel.Factory(
@@ -184,9 +208,14 @@ fun SmartBizApp(repoProvider: AppRepositoryProvider) {
                         }
                     },
                     onNavigateToReports = {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Business Analytics & Sales Reports generated")
+                        navController.navigate(NavRoutes.REPORTS) {
+                            popUpTo(NavRoutes.DASHBOARD) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
                         }
+                    },
+                    onNavigateToSearch = {
+                        navController.navigate(NavRoutes.SEARCH)
                     }
                 )
             }
@@ -273,13 +302,38 @@ fun SmartBizApp(repoProvider: AppRepositoryProvider) {
                 CustomerScreen(viewModel = viewModel)
             }
 
+            composable(NavRoutes.REPORTS) {
+                val viewModel: ReportsViewModel = viewModel(
+                    factory = ReportsViewModel.Factory(
+                        repoProvider.reportsRepository,
+                        repoProvider.analyticsRepository,
+                        repoProvider.insightsService
+                    )
+                )
+                ReportsScreen(viewModel = viewModel)
+            }
+
             composable(NavRoutes.SETTINGS) {
-                PageHeader(
-                    title = "Business Settings",
-                    subtitle = "Store details & preferences",
-                    modifier = Modifier.padding(16.dp)
+                val viewModel: SettingsViewModel = viewModel(
+                    factory = SettingsViewModel.Factory(
+                        repoProvider.settingsRepository
+                    )
+                )
+                SettingsScreen(viewModel = viewModel)
+            }
+
+            composable(NavRoutes.SEARCH) {
+                val viewModel: GlobalSearchViewModel = viewModel(
+                    factory = GlobalSearchViewModel.Factory(
+                        repoProvider.globalSearchRepository
+                    )
+                )
+                GlobalSearchScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
         }
     }
+}
 }

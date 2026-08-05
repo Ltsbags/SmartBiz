@@ -32,6 +32,7 @@ object InvoicePdfGenerator {
         context: Context,
         invoiceWithItems: InvoiceWithItems,
         businessName: String = AppConstants.DEFAULT_BUSINESS_NAME,
+        businessTagline: String = AppConstants.DEFAULT_BUSINESS_TAGLINE,
         currencySymbol: String = AppConstants.DEFAULT_CURRENCY
     ): File? {
         val invoice = invoiceWithItems.invoice
@@ -60,7 +61,7 @@ object InvoicePdfGenerator {
         // Subtitle / Tagline
         titlePaint.textSize = 10f
         titlePaint.typeface = Typeface.DEFAULT
-        canvas.drawText("Commercial Sales Invoice & Billing", 30f, 58f, titlePaint)
+        canvas.drawText(businessTagline, 30f, 58f, titlePaint)
 
         // "TAX INVOICE" label on right
         titlePaint.textSize = 18f

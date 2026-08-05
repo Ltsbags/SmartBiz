@@ -45,6 +45,7 @@ fun DashboardScreen(
     onNavigateToIncome: () -> Unit = {},
     onNavigateToCashBook: () -> Unit = {},
     onNavigateToReports: () -> Unit = {},
+    onNavigateToSearch: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +68,8 @@ fun DashboardScreen(
             AnimatedCard(delayMillis = 0) {
                 DashboardHeader(
                     businessName = state.businessName,
-                    dateText = state.currentDateText.ifEmpty { "Today" }
+                    dateText = state.currentDateText.ifEmpty { "Today" },
+                    onSearchClick = onNavigateToSearch
                 )
             }
         }
