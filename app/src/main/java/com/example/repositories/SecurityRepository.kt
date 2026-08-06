@@ -8,6 +8,8 @@ class SecurityRepository(
     private val securityEventDao: SecurityEventDao
 ) {
 
+    val allEvents: Flow<List<SecurityEventEntity>> = securityEventDao.getAllEventsFlow()
+
     suspend fun recordSecurityEvent(event: SecurityEventEntity): Long {
         return securityEventDao.insertEvent(event)
     }

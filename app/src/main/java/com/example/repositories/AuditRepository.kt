@@ -16,6 +16,8 @@ class AuditRepository(
         const val KEY_AUTO_RETENTION_ENABLED = "auto_retention_enabled"
     }
 
+    val allAuditLogs: Flow<List<AuditLogEntity>> = auditLogDao.getAllAuditsFlow()
+
     suspend fun recordAudit(audit: AuditLogEntity): Long {
         return auditLogDao.insertAudit(audit)
     }

@@ -39,14 +39,14 @@ class ActivityAggregatorService(
         auditLogs.forEach { log ->
             items.add(
                 UnifiedActivityItem(
-                    id = log.id,
+                    id = log.auditId,
                     source = "AUDIT_LOG",
-                    title = "${log.action} on ${log.entityType}",
-                    description = log.details ?: "Audit event recorded",
-                    category = log.module ?: "SYSTEM",
-                    severity = "INFO",
+                    title = "${log.action} on ${log.entityName.ifBlank { log.module }}",
+                    description = log.description,
+                    category = log.module,
+                    severity = log.severity,
                     timestamp = log.timestamp,
-                    actor = log.userName ?: "User"
+                    actor = log.userName.ifBlank { "User" }
                 )
             )
         }
@@ -71,14 +71,14 @@ class ActivityAggregatorService(
         securityEvents.forEach { sec ->
             items.add(
                 UnifiedActivityItem(
-                    id = sec.id,
+                    id = sec.eventId,
                     source = "SECURITY_EVENT",
                     title = sec.eventType,
                     description = sec.description,
                     category = "SECURITY",
                     severity = sec.severity,
                     timestamp = sec.timestamp,
-                    actor = sec.userId ?: "System"
+                    actor = sec.userName.ifBlank { sec.userId }
                 )
             )
         }
@@ -87,14 +87,14 @@ class ActivityAggregatorService(
         invoices.forEach { inv ->
             items.add(
                 UnifiedActivityItem(
-                    id = inv.id,
+                    id = inv.id.toString(),
                     source = "TRANSACTION",
                     title = "Invoice #${inv.invoiceNumber}",
                     description = "Amount: ₹${inv.totalAmount} • Status: ${inv.status}",
                     category = "SALES",
                     severity = "INFO",
-                    timestamp = inv.invoiceDate,
-                    actor = inv.createdUserId ?: "Sales Agent"
+                    timestamp = inv.date,
+                    actor = inv.customerName.ifBlank { "Sales Agent" }
                 )
             )
         }

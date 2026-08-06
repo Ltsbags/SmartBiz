@@ -11,6 +11,7 @@ class IncomeRepository(
     private val cashBookDao: CashBookDao
 ) {
     val allIncome: Flow<List<IncomeEntity>> = incomeDao.getAllIncome()
+    val totalIncomeAmount: Flow<Double?> = incomeDao.getTotalIncome()
 
     fun getIncomeByDateRange(startDate: Long, endDate: Long): Flow<List<IncomeEntity>> {
         return incomeDao.getIncomeByDateRange(startDate, endDate)

@@ -34,4 +34,13 @@ interface DeviceDao {
 
     @Query("UPDATE devices SET lastLoginTime = :lastLogin WHERE deviceId = :deviceId")
     suspend fun updateLastLoginTime(deviceId: String, lastLogin: Long = System.currentTimeMillis())
+
+    @Query("UPDATE devices SET deviceName = :newName WHERE deviceId = :deviceId")
+    suspend fun renameDevice(deviceId: String, newName: String)
+
+    @Query("UPDATE devices SET lastActiveTime = :lastActive WHERE deviceId = :deviceId")
+    suspend fun updateLastActiveTime(deviceId: String, lastActive: Long = System.currentTimeMillis())
+
+    @Query("SELECT * FROM devices ORDER BY lastActiveTime DESC")
+    fun getAllDevicesFlow(): Flow<List<DeviceEntity>>
 }

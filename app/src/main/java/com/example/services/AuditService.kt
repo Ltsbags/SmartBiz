@@ -68,6 +68,28 @@ class AuditService(
         )
     }
 
+    suspend fun logAuditEvent(
+        module: String,
+        action: String,
+        description: String,
+        severity: String = "INFO",
+        entityName: String = "",
+        entityId: String = "",
+        userId: String? = null,
+        userName: String? = null
+    ): Long {
+        return logEvent(
+            module = module,
+            action = action,
+            description = description,
+            severity = severity,
+            entityName = entityName,
+            entityId = entityId,
+            userId = userId,
+            userName = userName
+        )
+    }
+
     suspend fun logBusinessEvent(action: String, description: String, module: String, entityName: String = "", entityId: String = "", severity: String = "INFO", oldObj: Any? = null, newObj: Any? = null) {
         logEvent(
             module = module,

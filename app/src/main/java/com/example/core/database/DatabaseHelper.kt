@@ -31,6 +31,10 @@ import com.example.core.database.dao.NotificationDao
 import com.example.core.database.dao.ReminderDao
 import com.example.core.database.dao.NotificationPreferenceDao
 import com.example.core.database.dao.ScheduledTaskDao
+import com.example.core.database.dao.PrivacySettingsDao
+import com.example.core.database.dao.SessionPolicyDao
+import com.example.core.database.dao.DataAccessPolicyDao
+import com.example.core.database.dao.CompliancePolicyDao
 
 class DatabaseHelper(context: Context) {
     private val db = AppDatabase.getDatabase(context)
@@ -64,6 +68,10 @@ class DatabaseHelper(context: Context) {
     val reminderDao: ReminderDao get() = db.reminderDao()
     val notificationPreferenceDao: NotificationPreferenceDao get() = db.notificationPreferenceDao()
     val scheduledTaskDao: ScheduledTaskDao get() = db.scheduledTaskDao()
+    val privacySettingsDao: PrivacySettingsDao get() = db.privacySettingsDao()
+    val sessionPolicyDao: SessionPolicyDao get() = db.sessionPolicyDao()
+    val dataAccessPolicyDao: DataAccessPolicyDao get() = db.dataAccessPolicyDao()
+    val compliancePolicyDao: CompliancePolicyDao get() = db.compliancePolicyDao()
 
     companion object {
         @Volatile

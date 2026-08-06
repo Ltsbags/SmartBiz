@@ -17,6 +17,7 @@ class PurchaseRepository(
     private val supplierDao: SupplierDao
 ) {
     val allPurchasesWithItems: Flow<List<PurchaseWithItems>> = purchaseDao.getAllPurchasesWithItems()
+    val totalPurchasesAmount: Flow<Double?> = purchaseDao.getTotalPurchasesAmount()
 
     suspend fun getPurchaseById(id: Long): PurchaseWithItems? {
         return purchaseDao.getPurchaseWithItemsById(id)

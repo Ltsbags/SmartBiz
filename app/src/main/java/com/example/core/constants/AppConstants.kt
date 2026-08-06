@@ -7,7 +7,7 @@ object AppConstants {
 
     // Database Constants
     const val DATABASE_NAME = "smartbiz_db"
-    const val DATABASE_VERSION = 10
+    const val DATABASE_VERSION = 11
 
     // Preference Keys
     const val PREF_NAME = "smartbiz_prefs"
@@ -91,4 +91,9 @@ object NavRoutes {
     const val PERMISSIONS_LIST = "permissions_list"
     const val USER_ROLES_MANAGEMENT = "user_roles_management"
     const val ACCESS_DENIED = "access_denied"
+    const val ENTERPRISE_SECURITY_DASHBOARD = "enterprise_security_dashboard"
+    const val PRIVACY_SETTINGS = "privacy_settings"
+    const val TRUSTED_DEVICES = "trusted_devices"
+    const val SESSION_POLICIES = "session_policies"
+    const val COMPLIANCE_SETTINGS = "compliance_settings"
 }

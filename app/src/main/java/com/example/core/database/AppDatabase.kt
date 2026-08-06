@@ -15,6 +15,14 @@ import com.example.core.database.dao.NotificationDao
 import com.example.core.database.dao.ReminderDao
 import com.example.core.database.dao.NotificationPreferenceDao
 import com.example.core.database.dao.ScheduledTaskDao
+import com.example.core.database.dao.PrivacySettingsDao
+import com.example.core.database.dao.SessionPolicyDao
+import com.example.core.database.dao.DataAccessPolicyDao
+import com.example.core.database.dao.CompliancePolicyDao
+import com.example.core.database.entity.PrivacySettingsEntity
+import com.example.core.database.entity.SessionPolicyEntity
+import com.example.core.database.entity.DataAccessPolicyEntity
+import com.example.core.database.entity.CompliancePolicyEntity
 import com.example.core.database.dao.CashBookDao
 import com.example.core.database.dao.CategoryDao
 import com.example.core.database.dao.CustomerDao
@@ -40,10 +48,6 @@ import com.example.core.database.entity.AuditLogEntity
 import com.example.core.database.entity.EntityHistoryEntity
 import com.example.core.database.entity.SecurityEventEntity
 import com.example.core.database.entity.SecurityPolicyEntity
-import com.example.core.database.entity.NotificationEntity
-import com.example.core.database.entity.ReminderEntity
-import com.example.core.database.entity.NotificationPreferenceEntity
-import com.example.core.database.entity.ScheduledTaskEntity
 import com.example.core.database.entity.NotificationEntity
 import com.example.core.database.entity.ReminderEntity
 import com.example.core.database.entity.NotificationPreferenceEntity
@@ -103,7 +107,11 @@ import kotlinx.coroutines.launch
         NotificationEntity::class,
         ReminderEntity::class,
         NotificationPreferenceEntity::class,
-        ScheduledTaskEntity::class
+        ScheduledTaskEntity::class,
+        PrivacySettingsEntity::class,
+        SessionPolicyEntity::class,
+        DataAccessPolicyEntity::class,
+        CompliancePolicyEntity::class
     ],
     version = AppConstants.DATABASE_VERSION,
     exportSchema = false
@@ -138,6 +146,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
     abstract fun notificationPreferenceDao(): NotificationPreferenceDao
     abstract fun scheduledTaskDao(): ScheduledTaskDao
+    abstract fun privacySettingsDao(): PrivacySettingsDao
+    abstract fun sessionPolicyDao(): SessionPolicyDao
+    abstract fun dataAccessPolicyDao(): DataAccessPolicyDao
+    abstract fun compliancePolicyDao(): CompliancePolicyDao
 
     companion object {
         @Volatile

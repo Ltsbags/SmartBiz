@@ -18,7 +18,11 @@ data class DeviceEntity(
     val androidVersion: String = "Android 14",
     val appVersion: String = "1.0.0",
     val deviceIdentifier: String = "",
+    val platform: String = "Android",
     val lastLoginTime: Long = System.currentTimeMillis(),
+    val lastActiveTime: Long = System.currentTimeMillis(),
     val isTrusted: Boolean = true,
+    val isCurrentDevice: Boolean = false,
+    val trustLevel: String = "HIGH",
     val registeredDate: Long = System.currentTimeMillis()
 )

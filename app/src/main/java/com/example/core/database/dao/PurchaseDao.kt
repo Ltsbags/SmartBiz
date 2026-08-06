@@ -46,4 +46,7 @@ interface PurchaseDao {
 
     @Query("SELECT COUNT(*) FROM purchases")
     suspend fun getPurchaseCount(): Int
+
+    @Query("SELECT SUM(totalAmount) FROM purchases WHERE status != 'CANCELLED'")
+    fun getTotalPurchasesAmount(): Flow<Double?>
 }

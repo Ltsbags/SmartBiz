@@ -11,6 +11,7 @@ class ExpenseRepository(
     private val cashBookDao: CashBookDao
 ) {
     val allExpenses: Flow<List<ExpenseEntity>> = expenseDao.getAllExpenses()
+    val totalExpensesAmount: Flow<Double?> = expenseDao.getTotalExpenses()
 
     fun getExpensesByDateRange(startDate: Long, endDate: Long): Flow<List<ExpenseEntity>> {
         return expenseDao.getExpensesByDateRange(startDate, endDate)

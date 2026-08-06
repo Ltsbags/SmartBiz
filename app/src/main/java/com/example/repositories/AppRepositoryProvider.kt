@@ -17,6 +17,11 @@ import com.example.services.NotificationPreferenceService
 import com.example.services.ReminderService
 import com.example.services.SchedulerService
 import com.example.services.SessionHistoryService
+import com.example.services.PolicyEngine
+import com.example.services.PrivacyService
+import com.example.services.TrustedDeviceService
+import com.example.services.SessionPolicyService
+import com.example.services.ComplianceService
 
 class AppRepositoryProvider private constructor(context: Context) {
     private val dbHelper = DatabaseHelper.getInstance(context)
@@ -73,6 +78,13 @@ class AppRepositoryProvider private constructor(context: Context) {
     val preferenceRepository: NotificationPreferenceRepository = NotificationPreferenceRepository(dbHelper.notificationPreferenceDao)
     val schedulerRepository: SchedulerRepository = SchedulerRepository(dbHelper.scheduledTaskDao)
 
+    val securityPolicyRepository: SecurityPolicyRepository = SecurityPolicyRepository(dbHelper.securityPolicyDao)
+    val privacyRepository: PrivacyRepository = PrivacyRepository(dbHelper.privacySettingsDao)
+    val sessionPolicyRepository: SessionPolicyRepository = SessionPolicyRepository(dbHelper.sessionPolicyDao)
+    val dataAccessPolicyRepository: DataAccessPolicyRepository = DataAccessPolicyRepository(dbHelper.dataAccessPolicyDao)
+    val complianceRepository: ComplianceRepository = ComplianceRepository(dbHelper.compliancePolicyDao)
+    val trustedDeviceRepository: TrustedDeviceRepository = TrustedDeviceRepository(dbHelper.deviceDao)
+
     val notificationPreferenceService: NotificationPreferenceService = NotificationPreferenceService(preferenceRepository)
     val notificationEngine: NotificationEngine = NotificationEngine(notificationRepository, notificationPreferenceService)
     val reminderService: ReminderService = ReminderService(
@@ -83,6 +95,20 @@ class AppRepositoryProvider private constructor(context: Context) {
         notificationEngine
     )
     val schedulerService: SchedulerService = SchedulerService(schedulerRepository, notificationEngine)
+
+    val privacyService: PrivacyService = PrivacyService(privacyRepository, auditService)
+    val trustedDeviceService: TrustedDeviceService = TrustedDeviceService(trustedDeviceRepository, auditService)
+    val sessionPolicyService: SessionPolicyService = SessionPolicyService(sessionPolicyRepository, auditService)
+    val complianceService: ComplianceService = ComplianceService(complianceRepository, auditService)
+    val policyEngine: PolicyEngine = PolicyEngine(
+        securityPolicyRepository,
+        privacyRepository,
+        sessionPolicyRepository,
+        dataAccessPolicyRepository,
+        complianceRepository,
+        trustedDeviceRepository,
+        auditService
+    )
 
     companion object {
         @Volatile
