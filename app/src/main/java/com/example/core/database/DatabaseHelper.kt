@@ -27,6 +27,9 @@ import com.example.core.database.dao.AuditLogDao
 import com.example.core.database.dao.EntityHistoryDao
 import com.example.core.database.dao.SecurityEventDao
 import com.example.core.database.dao.SecurityPolicyDao
+import com.example.core.database.dao.RealtimeSessionDao
+import com.example.core.database.dao.PresenceDao
+import com.example.core.database.dao.RealtimeEventDao
 import com.example.core.database.dao.NotificationDao
 import com.example.core.database.dao.ReminderDao
 import com.example.core.database.dao.NotificationPreferenceDao
@@ -34,11 +37,42 @@ import com.example.core.database.dao.ScheduledTaskDao
 import com.example.core.database.dao.PrivacySettingsDao
 import com.example.core.database.dao.SessionPolicyDao
 import com.example.core.database.dao.DataAccessPolicyDao
+import com.example.core.database.dao.CommunicationDao
+import com.example.core.database.dao.PaymentDao
+import com.example.core.database.dao.PaymentRequestDao
+import com.example.core.database.dao.PaymentGatewayLogDao
+import com.example.core.database.dao.RefundDao
+import com.example.core.database.dao.ReportDefinitionDao
+import com.example.core.database.dao.SavedReportSnapshotDao
+import com.example.core.database.dao.KpiDefinitionDao
+import com.example.core.database.dao.AggregatedMetricsDao
+import com.example.core.database.dao.BranchMetricsDao
+import com.example.core.database.dao.ForecastingSnapshotDao
 import com.example.core.database.dao.CompliancePolicyDao
+import com.example.core.database.dao.GlobalizationDao
+import com.example.core.database.dao.WorkflowDao
+import com.example.core.database.dao.PluginDao
+import com.example.core.database.dao.ScalabilityDao
 
 class DatabaseHelper(context: Context) {
     private val db = AppDatabase.getDatabase(context)
 
+    val scalabilityDao: ScalabilityDao get() = db.scalabilityDao()
+    val workflowDao: WorkflowDao get() = db.workflowDao()
+    val globalizationDao: GlobalizationDao get() = db.globalizationDao()
+    val pluginDao: PluginDao get() = db.pluginDao()
+
+    val reportDefinitionDao: ReportDefinitionDao get() = db.reportDefinitionDao()
+    val savedReportSnapshotDao: SavedReportSnapshotDao get() = db.savedReportSnapshotDao()
+    val kpiDefinitionDao: KpiDefinitionDao get() = db.kpiDefinitionDao()
+    val aggregatedMetricsDao: AggregatedMetricsDao get() = db.aggregatedMetricsDao()
+    val branchMetricsDao: BranchMetricsDao get() = db.branchMetricsDao()
+    val forecastingSnapshotDao: ForecastingSnapshotDao get() = db.forecastingSnapshotDao()
+    val paymentDao: PaymentDao get() = db.paymentDao()
+    val paymentRequestDao: PaymentRequestDao get() = db.paymentRequestDao()
+    val paymentGatewayLogDao: PaymentGatewayLogDao get() = db.paymentGatewayLogDao()
+    val refundDao: RefundDao get() = db.refundDao()
+    val communicationDao: CommunicationDao get() = db.communicationDao()
     val invoiceDao: InvoiceDao get() = db.invoiceDao()
     val inventoryDao: InventoryDao get() = db.inventoryDao()
     val customerDao: CustomerDao get() = db.customerDao()
@@ -72,6 +106,9 @@ class DatabaseHelper(context: Context) {
     val sessionPolicyDao: SessionPolicyDao get() = db.sessionPolicyDao()
     val dataAccessPolicyDao: DataAccessPolicyDao get() = db.dataAccessPolicyDao()
     val compliancePolicyDao: CompliancePolicyDao get() = db.compliancePolicyDao()
+    val realtimeSessionDao: RealtimeSessionDao get() = db.realtimeSessionDao()
+    val presenceDao: PresenceDao get() = db.presenceDao()
+    val realtimeEventDao: RealtimeEventDao get() = db.realtimeEventDao()
 
     companion object {
         @Volatile

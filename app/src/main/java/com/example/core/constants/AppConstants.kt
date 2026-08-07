@@ -7,7 +7,7 @@ object AppConstants {
 
     // Database Constants
     const val DATABASE_NAME = "smartbiz_db"
-    const val DATABASE_VERSION = 11
+    const val DATABASE_VERSION = 16
 
     // Preference Keys
     const val PREF_NAME = "smartbiz_prefs"
@@ -96,4 +96,15 @@ object NavRoutes {
     const val TRUSTED_DEVICES = "trusted_devices"
     const val SESSION_POLICIES = "session_policies"
     const val COMPLIANCE_SETTINGS = "compliance_settings"
+    const val REALTIME_DASHBOARD = "realtime_dashboard"
+    const val COMMUNICATION_ENGINE = "communication_engine"
+    const val PAYMENT_DASHBOARD = "payment_dashboard"
+    const val BI_EXECUTIVE_DASHBOARD = "bi_executive_dashboard"
+    const val BI_CUSTOM_REPORTS = "bi_custom_reports"
+    const val BI_BUSINESS_ANALYTICS = "bi_business_analytics"
+    const val BI_FORECASTING = "bi_forecasting"
+    const val PLUGIN_MARKETPLACE = "plugin_marketplace"
+    const val WORKFLOW_AUTOMATION = "workflow_automation"
+    const val GLOBALIZATION_PLATFORM = "globalization_platform"
+    const val PERFORMANCE_HEALTH_DASHBOARD = "performance_health_dashboard"
 }

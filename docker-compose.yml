@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: smartbiz/api-gateway:latest
+    container_name: smartbiz-api-gateway
+    restart: always
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=smartbiz_prod
+      - DB_USER=smartbiz_admin
+      - DB_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_password
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+    networks:
+      - smartbiz-backend-net
+
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: smartbiz-postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=smartbiz_prod
+      - POSTGRES_USER=smartbiz_admin
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartbiz_admin -d smartbiz_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smartbiz-backend-net
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: smartbiz-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass_file /run/secrets/redis_password
+    secrets:
+      - redis_password
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smartbiz-backend-net
+
+  minio-object-storage:
+    image: minio/minio:latest
+    container_name: smartbiz-minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=smartbiz_minio
+      - MINIO_ROOT_PASSWORD_FILE=/run/secrets/minio_password
+    secrets:
+      - minio_password
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - smartbiz-backend-net
+
+networks:
+  smartbiz-backend-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+  minio_password:
+    file: ./secrets/minio_password.txt

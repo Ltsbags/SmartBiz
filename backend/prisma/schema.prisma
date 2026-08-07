@@ -1,0 +1,320 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  STAFF
+  VIEWER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  PARTIALLY_PAID
+  CANCELLED
+}
+
+enum PurchaseStatus {
+  PENDING
+  RECEIVED
+  PAID
+  CANCELLED
+}
+
+model Business {
+  id          String   @id @default(uuid())
+  name        String
+  legalName   String?  @map("legal_name")
+  taxId       String?  @map("tax_id")
+  currency    String   @default("INR")
+  phone       String?
+  email       String?
+  address     String?
+  logoUrl     String?  @map("logo_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  branches    Branch[]
+  users       User[]
+  products    Product[]
+  categories  Category[]
+  customers   Customer[]
+  suppliers   Supplier[]
+  invoices    Invoice[]
+  purchases   Purchase[]
+  expenses    Expense[]
+  incomes     Income[]
+  auditLogs   AuditLog[]
+  settings    Setting[]
+
+  @@map("businesses")
+}
+
+model Branch {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  name        String
+  code        String
+  address     String?
+  phone       String?
+  isHeadquarter Boolean @default(false) @map("is_headquarter")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  users       User[]
+  invoices    Invoice[]
+  purchases   Purchase[]
+  expenses    Expense[]
+  incomes     Income[]
+
+  @@map("branches")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  businessId   String   @map("business_id")
+  branchId     String?  @map("branch_id")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  fullName     String   @map("full_name")
+  phone        String?
+  role         Role     @default(STAFF)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch       Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  refreshTokens RefreshToken[]
+  auditLogs    AuditLog[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  isRevoked Boolean  @default(false) @map("is_revoked")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  categoryId  String?  @map("category_id")
+  sku         String?
+  name        String
+  unit        String   @default("pcs")
+  costPrice   Decimal  @default(0.0) @map("cost_price") @db.Decimal(12, 2)
+  sellingPrice Decimal @default(0.0) @map("selling_price") @db.Decimal(12, 2)
+  stockQty    Decimal  @default(0.0) @map("stock_qty") @db.Decimal(12, 2)
+  minStockAlert Decimal @default(5.0) @map("min_stock_alert") @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@map("products")
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  name        String
+  phone       String?
+  email       String?
+  address     String?
+  gstin       String?
+  balance     Decimal  @default(0.0) @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  invoices    Invoice[]
+
+  @@map("customers")
+}
+
+model Supplier {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  name        String
+  phone       String?
+  email       String?
+  address     String?
+  gstin       String?
+  balance     Decimal  @default(0.0) @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  purchases   Purchase[]
+
+  @@map("suppliers")
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  businessId    String        @map("business_id")
+  branchId      String        @map("branch_id")
+  customerId    String?       @map("customer_id")
+  invoiceNumber String        @map("invoice_number")
+  status        InvoiceStatus @default(ISSUED)
+  totalAmount   Decimal       @default(0.0) @map("total_amount") @db.Decimal(12, 2)
+  taxAmount     Decimal       @default(0.0) @map("tax_amount") @db.Decimal(12, 2)
+  discountAmount Decimal      @default(0.0) @map("discount_amount") @db.Decimal(12, 2)
+  paidAmount    Decimal       @default(0.0) @map("paid_amount") @db.Decimal(12, 2)
+  invoiceDate   DateTime      @default(now()) @map("invoice_date")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  deletedAt     DateTime?     @map("deleted_at")
+
+  business      Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch        Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  customer      Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@map("invoices")
+}
+
+model Purchase {
+  id            String         @id @default(uuid())
+  businessId    String         @map("business_id")
+  branchId      String         @map("branch_id")
+  supplierId    String?        @map("supplier_id")
+  purchaseNumber String        @map("purchase_number")
+  status        PurchaseStatus @default(RECEIVED)
+  totalAmount   Decimal        @default(0.0) @map("total_amount") @db.Decimal(12, 2)
+  paidAmount    Decimal        @default(0.0) @map("paid_amount") @db.Decimal(12, 2)
+  purchaseDate  DateTime       @default(now()) @map("purchase_date")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
+
+  business      Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch        Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  supplier      Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
+  @@map("purchases")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  branchId    String   @map("branch_id")
+  category    String   @default("GENERAL")
+  title       String
+  amount      Decimal  @default(0.0) @db.Decimal(12, 2)
+  expenseDate DateTime @default(now()) @map("expense_date")
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@map("expenses")
+}
+
+model Income {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  branchId    String   @map("branch_id")
+  category    String   @default("GENERAL")
+  title       String
+  amount      Decimal  @default(0.0) @db.Decimal(12, 2)
+  incomeDate  DateTime @default(now()) @map("income_date")
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@map("incomes")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  userId      String?  @map("user_id")
+  module      String
+  action      String
+  description String
+  severity    String   @default("INFO")
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  title       String
+  body        String
+  type        String   @default("SYSTEM")
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Setting {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  key         String
+  value       String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, key])
+  @@map("settings")
+}

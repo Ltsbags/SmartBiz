@@ -22,10 +22,53 @@ import com.example.services.PrivacyService
 import com.example.services.TrustedDeviceService
 import com.example.services.SessionPolicyService
 import com.example.services.ComplianceService
+import com.example.services.communication.CommunicationEngineService
 
 class AppRepositoryProvider private constructor(context: Context) {
     private val dbHelper = DatabaseHelper.getInstance(context)
     private val prefsService = SharedPreferencesService.getInstance(context)
+
+    val communicationRepository: CommunicationRepository = CommunicationRepository(dbHelper.communicationDao)
+    
+    val executionQueue: com.example.services.workflow.ExecutionQueue = com.example.services.workflow.ExecutionQueue()
+    val ruleEngine: com.example.services.workflow.RuleEngine = com.example.services.workflow.RuleEngine()
+    val approvalEngine: com.example.services.workflow.ApprovalEngine = com.example.services.workflow.ApprovalEngine(dbHelper.workflowDao)
+    val actionEngine: com.example.services.workflow.ActionEngine = com.example.services.workflow.ActionEngine(dbHelper.workflowDao, approvalEngine)
+    val workflowEngine: com.example.services.workflow.WorkflowEngine = com.example.services.workflow.WorkflowEngine(dbHelper.workflowDao, ruleEngine, actionEngine, executionQueue)
+    val workflowSchedulerService: com.example.services.workflow.WorkflowSchedulerService = com.example.services.workflow.WorkflowSchedulerService(workflowEngine)
+    val aiWorkflowAssistant: com.example.services.workflow.AiWorkflowAssistant = com.example.services.workflow.AiWorkflowAssistant()
+    val workflowRepository: WorkflowRepository = WorkflowRepository(dbHelper.workflowDao, workflowEngine, ruleEngine, approvalEngine, aiWorkflowAssistant)
+    val templateRepository: TemplateRepository = TemplateRepository(dbHelper.communicationDao)
+    val deliveryRepository: DeliveryRepository = DeliveryRepository(dbHelper.communicationDao)
+
+    val paymentRepository: PaymentRepository = PaymentRepository(dbHelper)
+
+    val pluginPermissionService: com.example.services.plugin.PluginPermissionService = com.example.services.plugin.PluginPermissionService(dbHelper.pluginDao)
+    val pluginLicenseService: com.example.services.plugin.PluginLicenseService = com.example.services.plugin.PluginLicenseService(dbHelper.pluginDao)
+    val pluginManagerService: com.example.services.plugin.PluginManagerService = com.example.services.plugin.PluginManagerService(dbHelper.pluginDao, pluginPermissionService, pluginLicenseService)
+    val pluginRepository: PluginRepository = PluginRepository(dbHelper.pluginDao, pluginManagerService, pluginPermissionService, pluginLicenseService)
+
+    val publicApiRepository: PublicApiRepository = PublicApiRepository()
+    val publicApiGateway: com.example.publicapi.gateway.PublicApiGateway = com.example.publicapi.gateway.PublicApiGateway(
+        publicApiRepository = publicApiRepository,
+        invoiceDao = dbHelper.invoiceDao,
+        customerDao = dbHelper.customerDao,
+        inventoryDao = dbHelper.inventoryDao
+    )
+
+    val templateEngineService: com.example.services.communication.TemplateEngineService = com.example.services.communication.TemplateEngineService()
+    val deliveryTrackingService: com.example.services.communication.DeliveryTrackingService = com.example.services.communication.DeliveryTrackingService(communicationRepository)
+    val communicationRetryService: com.example.services.communication.CommunicationRetryService = com.example.services.communication.CommunicationRetryService(communicationRepository, deliveryTrackingService)
+    val attachmentService: com.example.services.communication.AttachmentService = com.example.services.communication.AttachmentService(context)
+    val webhookFoundationService: com.example.services.communication.WebhookFoundationService = com.example.services.communication.WebhookFoundationService(deliveryTrackingService)
+
+    val communicationEngineService: CommunicationEngineService = CommunicationEngineService(
+        repository = communicationRepository,
+        templateEngine = templateEngineService,
+        deliveryTracking = deliveryTrackingService,
+        retryService = communicationRetryService,
+        webhookService = webhookFoundationService
+    )
 
     val invoiceRepository: InvoiceRepository = InvoiceRepository(
         dbHelper.invoiceDao,
@@ -109,6 +152,46 @@ class AppRepositoryProvider private constructor(context: Context) {
         trustedDeviceRepository,
         auditService
     )
+
+    val realtimeService: com.example.services.RealtimeService = com.example.services.RealtimeService(
+        dbHelper.realtimeEventDao,
+        dbHelper.realtimeSessionDao
+    )
+    val presenceService: com.example.services.PresenceService = com.example.services.PresenceService(
+        dbHelper.presenceDao
+    )
+    val connectionService: com.example.services.ConnectionService = com.example.services.ConnectionService(
+        context,
+        realtimeService
+    )
+
+    val realtimeRepository: RealtimeRepository = RealtimeRepository(realtimeService)
+    val presenceRepository: PresenceRepository = PresenceRepository(presenceService)
+
+    val aggregationService: com.example.services.bi.AggregationService = com.example.services.bi.AggregationService(
+        dbHelper.reportDao,
+        dbHelper.aggregatedMetricsDao,
+        dbHelper.branchMetricsDao
+    )
+    val kpiEngineService: com.example.services.bi.KPIEngineService = com.example.services.bi.KPIEngineService(
+        dbHelper.kpiDefinitionDao
+    )
+    val forecastingService: com.example.services.bi.ForecastingService = com.example.services.bi.ForecastingService(
+        dbHelper.forecastingSnapshotDao
+    )
+    val biService: com.example.services.bi.BIService = com.example.services.bi.BIService(
+        reportDao = dbHelper.reportDao,
+        aggregatedMetricsDao = dbHelper.aggregatedMetricsDao,
+        branchMetricsDao = dbHelper.branchMetricsDao,
+        kpiDefinitionDao = dbHelper.kpiDefinitionDao,
+        reportDefinitionDao = dbHelper.reportDefinitionDao,
+        savedReportSnapshotDao = dbHelper.savedReportSnapshotDao,
+        forecastingSnapshotDao = dbHelper.forecastingSnapshotDao,
+        aggregationService = aggregationService,
+        kpiEngineService = kpiEngineService,
+        forecastingService = forecastingService
+    )
+    val reportingRepository: ReportingRepository = ReportingRepository(biService)
 
     companion object {
         @Volatile

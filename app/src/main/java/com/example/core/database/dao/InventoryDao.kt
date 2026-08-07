@@ -32,6 +32,9 @@ interface InventoryDao {
     @Query("SELECT COUNT(*) FROM inventory_items WHERE stockQuantity <= 0 AND isArchived = 0")
     fun getOutOfStockCount(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM inventory_items WHERE stockQuantity <= minStockThreshold AND isArchived = 0")
+    fun getLowStockCount(): Flow<Int>
+
     @Query("SELECT SUM(stockQuantity * unitPrice) FROM inventory_items WHERE isArchived = 0")
     fun getTotalInventoryValue(): Flow<Double?>
 

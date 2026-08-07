@@ -7,72 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.core.constants.AppConstants
-import com.example.core.database.dao.AuditLogDao
-import com.example.core.database.dao.EntityHistoryDao
-import com.example.core.database.dao.SecurityEventDao
-import com.example.core.database.dao.SecurityPolicyDao
-import com.example.core.database.dao.NotificationDao
-import com.example.core.database.dao.ReminderDao
-import com.example.core.database.dao.NotificationPreferenceDao
-import com.example.core.database.dao.ScheduledTaskDao
-import com.example.core.database.dao.PrivacySettingsDao
-import com.example.core.database.dao.SessionPolicyDao
-import com.example.core.database.dao.DataAccessPolicyDao
-import com.example.core.database.dao.CompliancePolicyDao
-import com.example.core.database.entity.PrivacySettingsEntity
-import com.example.core.database.entity.SessionPolicyEntity
-import com.example.core.database.entity.DataAccessPolicyEntity
-import com.example.core.database.entity.CompliancePolicyEntity
-import com.example.core.database.dao.CashBookDao
-import com.example.core.database.dao.CategoryDao
-import com.example.core.database.dao.CustomerDao
-import com.example.core.database.dao.CustomerLedgerDao
-import com.example.core.database.dao.DeviceDao
-import com.example.core.database.dao.ExpenseCategoryDao
-import com.example.core.database.dao.ExpenseDao
-import com.example.core.database.dao.GlobalSearchDao
-import com.example.core.database.dao.IncomeDao
-import com.example.core.database.dao.InventoryDao
-import com.example.core.database.dao.InvoiceDao
-import com.example.core.database.dao.LoginHistoryDao
-import com.example.core.database.dao.PurchaseDao
-import com.example.core.database.dao.ReportDao
-import com.example.core.database.dao.SessionDao
-import com.example.core.database.dao.SupplierDao
-import com.example.core.database.dao.UserDao
-import com.example.core.database.dao.PermissionDao
-import com.example.core.database.dao.RoleDao
-import com.example.core.database.dao.RolePermissionDao
-import com.example.core.database.dao.UserRoleDao
-import com.example.core.database.entity.AuditLogEntity
-import com.example.core.database.entity.EntityHistoryEntity
-import com.example.core.database.entity.SecurityEventEntity
-import com.example.core.database.entity.SecurityPolicyEntity
-import com.example.core.database.entity.NotificationEntity
-import com.example.core.database.entity.ReminderEntity
-import com.example.core.database.entity.NotificationPreferenceEntity
-import com.example.core.database.entity.ScheduledTaskEntity
-import com.example.core.database.entity.PermissionEntity
-import com.example.core.database.entity.RoleEntity
-import com.example.core.database.entity.RolePermissionCrossRef
-import com.example.core.database.entity.UserRoleCrossRef
-import com.example.core.database.entity.CashBookEntryEntity
-import com.example.core.database.entity.CategoryEntity
-import com.example.core.database.entity.CustomerEntity
-import com.example.core.database.entity.CustomerLedgerEntity
-import com.example.core.database.entity.DeviceEntity
-import com.example.core.database.entity.ExpenseCategoryEntity
-import com.example.core.database.entity.ExpenseEntity
-import com.example.core.database.entity.IncomeEntity
-import com.example.core.database.entity.InventoryItemEntity
-import com.example.core.database.entity.InvoiceEntity
-import com.example.core.database.entity.InvoiceItemEntity
-import com.example.core.database.entity.LoginHistoryEntity
-import com.example.core.database.entity.PurchaseEntity
-import com.example.core.database.entity.PurchaseItemEntity
-import com.example.core.database.entity.SessionEntity
-import com.example.core.database.entity.SupplierEntity
-import com.example.core.database.entity.UserEntity
+import com.example.core.database.dao.*
+import com.example.core.database.entity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -111,12 +47,68 @@ import kotlinx.coroutines.launch
         PrivacySettingsEntity::class,
         SessionPolicyEntity::class,
         DataAccessPolicyEntity::class,
-        CompliancePolicyEntity::class
+        CompliancePolicyEntity::class,
+        RealtimeSessionEntity::class,
+        PresenceEntity::class,
+        RealtimeEventEntity::class,
+        CommunicationMessageEntity::class,
+        CommunicationTemplateEntity::class,
+        CommunicationAutomationRuleEntity::class,
+        CommunicationLogEntity::class,
+        PaymentEntity::class,
+        PaymentRequestEntity::class,
+        PaymentGatewayLogEntity::class,
+        RefundEntity::class,
+        ReportDefinitionEntity::class,
+        SavedReportSnapshotEntity::class,
+        KpiDefinitionEntity::class,
+        AggregatedDailyMetricsEntity::class,
+        BranchMetricsEntity::class,
+        ForecastingSnapshotEntity::class,
+        PluginEntity::class,
+        PluginSettingsEntity::class,
+        PluginPermissionEntity::class,
+        PluginRegistryEntity::class,
+        WorkflowEntity::class,
+        WorkflowExecutionEntity::class,
+        RuleEntity::class,
+        ApprovalRequestEntity::class,
+        AutomationHistoryEntity::class,
+        LocaleEntity::class,
+        TranslationEntity::class,
+        CurrencySettingsEntity::class,
+        TaxProfileEntity::class,
+        CacheMetricsEntity::class,
+        QueueJobEntity::class,
+        SystemHealthMetricEntity::class,
+        PerformanceBenchmarkEntity::class,
+        DashboardLayoutEntity::class,
+        DashboardWidgetEntity::class,
+        TaskCenterEntity::class,
+        BusinessHealthEntity::class
     ],
     version = AppConstants.DATABASE_VERSION,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun scalabilityDao(): ScalabilityDao
+    abstract fun workflowDao(): WorkflowDao
+    abstract fun globalizationDao(): GlobalizationDao
+    abstract fun pluginDao(): PluginDao
+    abstract fun reportDefinitionDao(): ReportDefinitionDao
+    abstract fun savedReportSnapshotDao(): SavedReportSnapshotDao
+    abstract fun kpiDefinitionDao(): KpiDefinitionDao
+    abstract fun aggregatedMetricsDao(): AggregatedMetricsDao
+    abstract fun branchMetricsDao(): BranchMetricsDao
+    abstract fun forecastingSnapshotDao(): ForecastingSnapshotDao
+    abstract fun paymentDao(): PaymentDao
+    abstract fun paymentRequestDao(): PaymentRequestDao
+    abstract fun paymentGatewayLogDao(): PaymentGatewayLogDao
+    abstract fun refundDao(): RefundDao
+    abstract fun communicationDao(): CommunicationDao
+    abstract fun realtimeSessionDao(): RealtimeSessionDao
+    abstract fun presenceDao(): PresenceDao
+    abstract fun realtimeEventDao(): RealtimeEventDao
     abstract fun invoiceDao(): InvoiceDao
     abstract fun inventoryDao(): InventoryDao
     abstract fun customerDao(): CustomerDao
@@ -150,6 +142,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionPolicyDao(): SessionPolicyDao
     abstract fun dataAccessPolicyDao(): DataAccessPolicyDao
     abstract fun compliancePolicyDao(): CompliancePolicyDao
+    abstract fun dashboardLayoutDao(): DashboardLayoutDao
+    abstract fun dashboardWidgetDao(): DashboardWidgetDao
+    abstract fun taskCenterDao(): TaskCenterDao
+    abstract fun businessHealthDao(): BusinessHealthDao
 
     companion object {
         @Volatile
@@ -248,6 +244,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         private val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS `roles`")
                 db.execSQL(
                     """
                     CREATE TABLE IF NOT EXISTS `roles` (
@@ -263,6 +260,7 @@ abstract class AppDatabase : RoomDatabase() {
                     """.trimIndent()
                 )
 
+                db.execSQL("DROP TABLE IF EXISTS `permissions`")
                 db.execSQL(
                     """
                     CREATE TABLE IF NOT EXISTS `permissions` (
@@ -279,6 +277,7 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_permissions_permissionCode` ON `permissions` (`permissionCode`)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_permissions_category` ON `permissions` (`category`)")
 
+                db.execSQL("DROP TABLE IF EXISTS `role_permission_cross_ref`")
                 db.execSQL(
                     """
                     CREATE TABLE IF NOT EXISTS `role_permission_cross_ref` (
@@ -291,6 +290,7 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_role_permission_cross_ref_roleId` ON `role_permission_cross_ref` (`roleId`)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_role_permission_cross_ref_permissionId` ON `role_permission_cross_ref` (`permissionId`)")
 
+                db.execSQL("DROP TABLE IF EXISTS `user_role_cross_ref`")
                 db.execSQL(
                     """
                     CREATE TABLE IF NOT EXISTS `user_role_cross_ref` (
@@ -307,6 +307,667 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private fun ensureAllTablesExist(db: SupportSQLiteDatabase) {
+            fun addColumnIfNotExists(tableName: String, columnName: String, columnDef: String) {
+                try {
+                    val cursor = db.query("PRAGMA table_info(`$tableName`)")
+                    var exists = false
+                    val nameIdx = cursor.getColumnIndex("name")
+                    while (cursor.moveToNext()) {
+                        if (nameIdx != -1 && cursor.getString(nameIdx) == columnName) {
+                            exists = true
+                            break
+                        }
+                    }
+                    cursor.close()
+                    if (!exists) {
+                        db.execSQL("ALTER TABLE `$tableName` ADD COLUMN `$columnName` $columnDef")
+                    }
+                } catch (_: Exception) {}
+            }
+
+            addColumnIfNotExists("devices", "platform", "TEXT NOT NULL DEFAULT 'Android'")
+            addColumnIfNotExists("devices", "lastActiveTime", "INTEGER NOT NULL DEFAULT 0")
+            addColumnIfNotExists("devices", "isCurrentDevice", "INTEGER NOT NULL DEFAULT 0")
+            addColumnIfNotExists("devices", "trustLevel", "TEXT NOT NULL DEFAULT 'HIGH'")
+
+            db.execSQL("DROP TABLE IF EXISTS `audit_logs`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `audit_logs` (
+                    `auditId` TEXT NOT NULL PRIMARY KEY,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL,
+                    `userId` TEXT NOT NULL,
+                    `userName` TEXT NOT NULL,
+                    `sessionId` TEXT NOT NULL,
+                    `module` TEXT NOT NULL,
+                    `entityName` TEXT NOT NULL,
+                    `entityId` TEXT NOT NULL,
+                    `action` TEXT NOT NULL,
+                    `severity` TEXT NOT NULL,
+                    `oldValueJson` TEXT,
+                    `newValueJson` TEXT,
+                    `description` TEXT NOT NULL,
+                    `ipAddress` TEXT NOT NULL,
+                    `deviceName` TEXT NOT NULL,
+                    `appVersion` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_auditId` ON `audit_logs` (`auditId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_userId` ON `audit_logs` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_module` ON `audit_logs` (`module`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_timestamp` ON `audit_logs` (`timestamp`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_severity` ON `audit_logs` (`severity`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_entityName` ON `audit_logs` (`entityName`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_entityId` ON `audit_logs` (`entityId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_businessId` ON `audit_logs` (`businessId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_branchId` ON `audit_logs` (`branchId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_audit_logs_action` ON `audit_logs` (`action`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `entity_history`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `entity_history` (
+                    `historyId` TEXT NOT NULL PRIMARY KEY,
+                    `entityName` TEXT NOT NULL,
+                    `entityId` TEXT NOT NULL,
+                    `action` TEXT NOT NULL,
+                    `oldValueJson` TEXT,
+                    `newValueJson` TEXT,
+                    `modifiedFieldsJson` TEXT,
+                    `userId` TEXT NOT NULL,
+                    `userName` TEXT NOT NULL,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_entity_history_historyId` ON `entity_history` (`historyId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_entity_history_entityName` ON `entity_history` (`entityName`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_entity_history_entityId` ON `entity_history` (`entityId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_entity_history_userId` ON `entity_history` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_entity_history_timestamp` ON `entity_history` (`timestamp`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `security_events`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `security_events` (
+                    `eventId` TEXT NOT NULL PRIMARY KEY,
+                    `eventType` TEXT NOT NULL,
+                    `severity` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `module` TEXT NOT NULL,
+                    `userId` TEXT NOT NULL,
+                    `userName` TEXT NOT NULL,
+                    `deviceName` TEXT NOT NULL,
+                    `ipAddress` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_eventId` ON `security_events` (`eventId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_eventType` ON `security_events` (`eventType`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_severity` ON `security_events` (`severity`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_module` ON `security_events` (`module`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_userId` ON `security_events` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_security_events_timestamp` ON `security_events` (`timestamp`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `security_policies`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `security_policies` (
+                    `policyKey` TEXT NOT NULL PRIMARY KEY,
+                    `policyName` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `isEnabled` INTEGER NOT NULL,
+                    `rulesJson` TEXT NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `notifications`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `notifications` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL,
+                    `userId` TEXT NOT NULL,
+                    `type` TEXT NOT NULL,
+                    `title` TEXT NOT NULL,
+                    `message` TEXT NOT NULL,
+                    `severity` TEXT NOT NULL,
+                    `priority` TEXT NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `isPinned` INTEGER NOT NULL,
+                    `isArchived` INTEGER NOT NULL,
+                    `createdDate` INTEGER NOT NULL,
+                    `scheduledDate` INTEGER,
+                    `deliveredDate` INTEGER,
+                    `readDate` INTEGER,
+                    `payloadJson` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_id` ON `notifications` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_businessId` ON `notifications` (`businessId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_type` ON `notifications` (`type`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_severity` ON `notifications` (`severity`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_priority` ON `notifications` (`priority`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_status` ON `notifications` (`status`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notifications_createdDate` ON `notifications` (`createdDate`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `reminders`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `reminders` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `title` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `module` TEXT NOT NULL,
+                    `referenceId` TEXT,
+                    `repeatType` TEXT NOT NULL,
+                    `nextTrigger` INTEGER NOT NULL,
+                    `isEnabled` INTEGER NOT NULL,
+                    `createdDate` INTEGER NOT NULL,
+                    `updatedDate` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reminders_id` ON `reminders` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reminders_module` ON `reminders` (`module`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reminders_repeatType` ON `reminders` (`repeatType`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reminders_nextTrigger` ON `reminders` (`nextTrigger`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_reminders_isEnabled` ON `reminders` (`isEnabled`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `notification_preferences`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `notification_preferences` (
+                    `key` TEXT NOT NULL PRIMARY KEY,
+                    `title` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `category` TEXT NOT NULL,
+                    `isEnabled` INTEGER NOT NULL,
+                    `updatedDate` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `scheduled_tasks`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `scheduled_tasks` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `taskName` TEXT NOT NULL,
+                    `taskType` TEXT NOT NULL,
+                    `cronOrFrequency` TEXT NOT NULL,
+                    `lastRunTimestamp` INTEGER,
+                    `nextRunTimestamp` INTEGER NOT NULL,
+                    `isEnabled` INTEGER NOT NULL,
+                    `status` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_scheduled_tasks_id` ON `scheduled_tasks` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_scheduled_tasks_taskType` ON `scheduled_tasks` (`taskType`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_scheduled_tasks_nextRunTimestamp` ON `scheduled_tasks` (`nextRunTimestamp`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_scheduled_tasks_isEnabled` ON `scheduled_tasks` (`isEnabled`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `privacy_settings`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `privacy_settings` (
+                    `userId` TEXT NOT NULL PRIMARY KEY,
+                    `hideFinancialValues` INTEGER NOT NULL,
+                    `hideDashboardAmounts` INTEGER NOT NULL,
+                    `maskMobileNumbers` INTEGER NOT NULL,
+                    `maskGstNumbers` INTEGER NOT NULL,
+                    `maskEmailAddresses` INTEGER NOT NULL,
+                    `blurSensitiveScreens` INTEGER NOT NULL,
+                    `secureClipboard` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `session_policies`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `session_policies` (
+                    `policyId` TEXT NOT NULL PRIMARY KEY,
+                    `sessionTimeoutMinutes` INTEGER NOT NULL,
+                    `idleTimeoutMinutes` INTEGER NOT NULL,
+                    `maxConcurrentSessions` INTEGER NOT NULL,
+                    `rememberDeviceDays` INTEGER NOT NULL,
+                    `autoLogoutEnabled` INTEGER NOT NULL,
+                    `forceReauthForSensitiveOps` INTEGER NOT NULL,
+                    `enableAppLock` INTEGER NOT NULL,
+                    `requireBiometric` INTEGER NOT NULL,
+                    `requirePin` INTEGER NOT NULL,
+                    `lockOnBackground` INTEGER NOT NULL,
+                    `lockAfterIdleMinutes` INTEGER NOT NULL,
+                    `lockAfterRestart` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `data_access_policies`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `data_access_policies` (
+                    `policyId` TEXT NOT NULL PRIMARY KEY,
+                    `roleId` TEXT NOT NULL,
+                    `allowExport` INTEGER NOT NULL,
+                    `allowBackup` INTEGER NOT NULL,
+                    `allowRestore` INTEGER NOT NULL,
+                    `allowScreenshot` INTEGER NOT NULL,
+                    `allowPrinting` INTEGER NOT NULL,
+                    `allowPdfSharing` INTEGER NOT NULL,
+                    `rulesJson` TEXT NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `compliance_policies`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `compliance_policies` (
+                    `policyId` TEXT NOT NULL PRIMARY KEY,
+                    `framework` TEXT NOT NULL,
+                    `title` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `isEnforced` INTEGER NOT NULL,
+                    `complianceRulesJson` TEXT NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `lastEvaluatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `realtime_sessions`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `realtime_sessions` (
+                    `sessionId` TEXT NOT NULL PRIMARY KEY,
+                    `userId` TEXT NOT NULL,
+                    `userName` TEXT NOT NULL,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL,
+                    `connectionState` TEXT NOT NULL,
+                    `transportType` TEXT NOT NULL,
+                    `connectedAt` INTEGER NOT NULL,
+                    `lastHeartbeatAt` INTEGER NOT NULL,
+                    `ipAddress` TEXT NOT NULL,
+                    `deviceInfo` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_sessions_userId` ON `realtime_sessions` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_sessions_businessId` ON `realtime_sessions` (`businessId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_sessions_connectionState` ON `realtime_sessions` (`connectionState`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `presence`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `presence` (
+                    `userId` TEXT NOT NULL PRIMARY KEY,
+                    `userName` TEXT NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `customStatus` TEXT NOT NULL,
+                    `lastSeenAt` INTEGER NOT NULL,
+                    `currentDevice` TEXT NOT NULL,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_presence_userId` ON `presence` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_presence_status` ON `presence` (`status`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_presence_businessId` ON `presence` (`businessId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_presence_lastSeenAt` ON `presence` (`lastSeenAt`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `realtime_events`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `realtime_events` (
+                    `eventId` TEXT NOT NULL PRIMARY KEY,
+                    `eventType` TEXT NOT NULL,
+                    `module` TEXT NOT NULL,
+                    `entityId` TEXT NOT NULL,
+                    `payloadJson` TEXT NOT NULL,
+                    `severity` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    `isProcessed` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_events_eventId` ON `realtime_events` (`eventId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_events_eventType` ON `realtime_events` (`eventType`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_events_module` ON `realtime_events` (`module`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_events_timestamp` ON `realtime_events` (`timestamp`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_realtime_events_isProcessed` ON `realtime_events` (`isProcessed`)")
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `locales` (
+                    `code` TEXT NOT NULL PRIMARY KEY,
+                    `name` TEXT NOT NULL,
+                    `nativeName` TEXT NOT NULL,
+                    `isRtl` INTEGER NOT NULL,
+                    `isDefault` INTEGER NOT NULL,
+                    `isActive` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `translations` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `localeCode` TEXT NOT NULL,
+                    `key` TEXT NOT NULL,
+                    `value` TEXT NOT NULL,
+                    `category` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `currency_settings` (
+                    `code` TEXT NOT NULL PRIMARY KEY,
+                    `name` TEXT NOT NULL,
+                    `symbol` TEXT NOT NULL,
+                    `decimalPrecision` INTEGER NOT NULL,
+                    `exchangeRateToUsd` REAL NOT NULL,
+                    `thousandsSeparator` TEXT NOT NULL,
+                    `decimalSeparator` TEXT NOT NULL,
+                    `isDefault` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `tax_profiles` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `countryCode` TEXT NOT NULL,
+                    `name` TEXT NOT NULL,
+                    `ratePercentage` REAL NOT NULL,
+                    `taxType` TEXT NOT NULL,
+                    `isDefault` INTEGER NOT NULL,
+                    `rulesJson` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `cache_metrics` (
+                    `cacheRegion` TEXT NOT NULL PRIMARY KEY,
+                    `hitCount` INTEGER NOT NULL,
+                    `missCount` INTEGER NOT NULL,
+                    `totalMemoryBytes` INTEGER NOT NULL,
+                    `evictedKeysCount` INTEGER NOT NULL,
+                    `avgLatencyMs` REAL NOT NULL,
+                    `lastClearedTimestamp` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `queue_jobs` (
+                    `jobId` TEXT NOT NULL PRIMARY KEY,
+                    `queueName` TEXT NOT NULL,
+                    `jobType` TEXT NOT NULL,
+                    `payloadJson` TEXT NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `retryCount` INTEGER NOT NULL,
+                    `maxRetries` INTEGER NOT NULL,
+                    `errorMessage` TEXT,
+                    `createdAt` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `system_health_metrics` (
+                    `serviceName` TEXT NOT NULL PRIMARY KEY,
+                    `status` TEXT NOT NULL,
+                    `latencyMs` INTEGER NOT NULL,
+                    `successRatePercent` REAL NOT NULL,
+                    `activeConnections` INTEGER NOT NULL,
+                    `circuitBreakerState` TEXT NOT NULL,
+                    `lastCheckTimestamp` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `performance_benchmarks` (
+                    `metricName` TEXT NOT NULL PRIMARY KEY,
+                    `budgetMs` INTEGER NOT NULL,
+                    `actualMs` INTEGER NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `sampleSize` INTEGER NOT NULL,
+                    `lastUpdated` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `plugins`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `plugins` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `name` TEXT NOT NULL,
+                    `version` TEXT NOT NULL,
+                    `developer` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `pluginType` TEXT NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `minApiVersion` INTEGER NOT NULL,
+                    `licenseType` TEXT NOT NULL,
+                    `licenseKey` TEXT NOT NULL,
+                    `isLicenseValid` INTEGER NOT NULL,
+                    `licenseExpiryDate` INTEGER NOT NULL,
+                    `installedAt` INTEGER NOT NULL,
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `plugin_settings`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `plugin_settings` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `pluginId` TEXT NOT NULL,
+                    `key` TEXT NOT NULL,
+                    `value` TEXT NOT NULL,
+                    `valueType` TEXT NOT NULL DEFAULT 'STRING',
+                    `updatedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `plugin_permissions`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `plugin_permissions` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `pluginId` TEXT NOT NULL,
+                    `permissionName` TEXT NOT NULL,
+                    `isGranted` INTEGER NOT NULL,
+                    `grantedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `plugin_registry`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `plugin_registry` (
+                    `pluginId` TEXT NOT NULL PRIMARY KEY,
+                    `manifestJson` TEXT NOT NULL,
+                    `entryPointClass` TEXT NOT NULL,
+                    `isSandboxed` INTEGER NOT NULL DEFAULT 1
+                )
+                """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE IF EXISTS `dashboard_layouts`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `dashboard_layouts` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `layoutName` TEXT NOT NULL,
+                    `userId` TEXT NOT NULL,
+                    `businessId` TEXT NOT NULL,
+                    `branchId` TEXT NOT NULL,
+                    `isDefault` INTEGER NOT NULL,
+                    `widgetPositionsJson` TEXT NOT NULL,
+                    `updatedDate` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_layouts_id` ON `dashboard_layouts` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_layouts_userId` ON `dashboard_layouts` (`userId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_layouts_businessId` ON `dashboard_layouts` (`businessId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_layouts_branchId` ON `dashboard_layouts` (`branchId`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `dashboard_widgets`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `dashboard_widgets` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `widgetKey` TEXT NOT NULL,
+                    `title` TEXT NOT NULL,
+                    `category` TEXT NOT NULL,
+                    `isEnabled` INTEGER NOT NULL,
+                    `isPinned` INTEGER NOT NULL,
+                    `sortOrder` INTEGER NOT NULL,
+                    `widthSpan` INTEGER NOT NULL,
+                    `minRole` TEXT NOT NULL,
+                    `requiredPermission` TEXT,
+                    `configJson` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_id` ON `dashboard_widgets` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_widgetKey` ON `dashboard_widgets` (`widgetKey`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_category` ON `dashboard_widgets` (`category`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_isEnabled` ON `dashboard_widgets` (`isEnabled`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_isPinned` ON `dashboard_widgets` (`isPinned`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_dashboard_widgets_sortOrder` ON `dashboard_widgets` (`sortOrder`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `task_center`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `task_center` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `title` TEXT NOT NULL,
+                    `description` TEXT NOT NULL,
+                    `taskType` TEXT NOT NULL,
+                    `severity` TEXT NOT NULL,
+                    `priority` TEXT NOT NULL,
+                    `isCompleted` INTEGER NOT NULL,
+                    `actionUrl` TEXT,
+                    `referenceId` TEXT,
+                    `dueDate` INTEGER,
+                    `createdDate` INTEGER NOT NULL,
+                    `completedDate` INTEGER
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_id` ON `task_center` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_taskType` ON `task_center` (`taskType`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_severity` ON `task_center` (`severity`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_priority` ON `task_center` (`priority`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_isCompleted` ON `task_center` (`isCompleted`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_center_createdDate` ON `task_center` (`createdDate`)")
+
+            db.execSQL("DROP TABLE IF EXISTS `business_health`")
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `business_health` (
+                    `id` TEXT NOT NULL PRIMARY KEY,
+                    `overallScore` INTEGER NOT NULL,
+                    `revenueScore` INTEGER NOT NULL,
+                    `cashFlowScore` INTEGER NOT NULL,
+                    `inventoryScore` INTEGER NOT NULL,
+                    `securityScore` INTEGER NOT NULL,
+                    `backupScore` INTEGER NOT NULL,
+                    `statusColor` TEXT NOT NULL,
+                    `recommendationsJson` TEXT NOT NULL,
+                    `calculatedDate` INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_business_health_id` ON `business_health` (`id`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_business_health_calculatedDate` ON `business_health` (`calculatedDate`)")
+        }
+
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_11_12 = object : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_10_12 = object : Migration(10, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_12_13 = object : Migration(12, 13) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_13_14 = object : Migration(13, 14) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                ensureAllTablesExist(db)
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -314,7 +975,11 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     AppConstants.DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
+                    .addMigrations(
+                        MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
+                        MIGRATION_10_11, MIGRATION_11_12, MIGRATION_10_12,
+                        MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16
+                    )
                     .addCallback(DatabaseCallback())
                     .fallbackToDestructiveMigration(true)
                     .fallbackToDestructiveMigrationOnDowngrade(true)

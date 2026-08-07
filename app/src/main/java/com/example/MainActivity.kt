@@ -333,6 +333,69 @@ fun SmartBizApp(repoProvider: AppRepositoryProvider) {
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
+
+            composable(NavRoutes.REALTIME_DASHBOARD) {
+                val viewModel: com.example.features.realtime.RealtimeViewModel = viewModel(
+                    factory = com.example.features.realtime.RealtimeViewModel.Factory(
+                        repoProvider.realtimeRepository,
+                        repoProvider.presenceRepository,
+                        repoProvider.connectionService
+                    )
+                )
+                com.example.features.realtime.screens.RealtimeDashboardScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavRoutes.COMMUNICATION_ENGINE) {
+                val viewModel: com.example.features.communication.viewmodel.CommunicationViewModel = viewModel(
+                    factory = com.example.features.communication.viewmodel.CommunicationViewModel.Factory(
+                        repoProvider.communicationRepository,
+                        repoProvider.communicationEngineService
+                    )
+                )
+                com.example.features.communication.screens.CommunicationContainerScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavRoutes.PLUGIN_MARKETPLACE) {
+                val viewModel: com.example.features.plugin.PluginViewModel = viewModel(
+                    factory = com.example.features.plugin.PluginViewModel.Factory(
+                        repoProvider.pluginRepository
+                    )
+                )
+                com.example.features.plugin.PluginMarketplaceScreen(
+                    viewModel = viewModel,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavRoutes.WORKFLOW_AUTOMATION) {
+                val viewModel: com.example.features.workflow.WorkflowViewModel = viewModel(
+                    factory = com.example.features.workflow.WorkflowViewModel.Factory(
+                        repoProvider.workflowRepository
+                    )
+                )
+                com.example.features.workflow.screens.WorkflowContainerScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavRoutes.GLOBALIZATION_PLATFORM) {
+                com.example.features.globalization.ui.GlobalizationDashboardScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavRoutes.PERFORMANCE_HEALTH_DASHBOARD) {
+                com.example.features.scalability.ui.ScalabilityDashboardScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
