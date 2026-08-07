@@ -377,7 +377,7 @@ private fun ApiSandboxTab(
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text("Interactive API Sandbox Explorer", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Text("Test public API endpoints directly inside SmartBiz", style = MaterialTheme.typography.bodySmall)
+        Text("Test public API endpoints directly inside BillNova", style = MaterialTheme.typography.bodySmall)
 
         Spacer(modifier = Modifier.height(12.dp))
 

@@ -60,7 +60,7 @@ class AuthRepository(
         val newUser = UserEntity(
             userId = userId,
             fullName = fullName.ifBlank { "Business Owner" },
-            businessName = businessName.ifBlank { "My SmartBiz Store" },
+            businessName = businessName.ifBlank { "My BillNova Store" },
             mobileNumber = mobileNumber.trim(),
             email = email.trim(),
             roleId = "ROLE_OWNER",

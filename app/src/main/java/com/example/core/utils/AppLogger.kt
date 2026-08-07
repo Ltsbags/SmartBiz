@@ -4,7 +4,7 @@ import android.util.Log
 import com.example.BuildConfig
 
 object AppLogger {
-    private const val DEFAULT_TAG = "SmartBizApp"
+    private const val DEFAULT_TAG = "BillNovaApp"
 
     fun d(tag: String = DEFAULT_TAG, message: String, throwable: Throwable? = null) {
         if (BuildConfig.DEBUG) {

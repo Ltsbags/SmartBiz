@@ -1,8 +1,9 @@
 package com.example.core.constants
 
 object AppConstants {
-    const val APP_NAME = "SmartBiz"
-    const val APP_TAGLINE = "Modern Business Billing & Inventory"
+    const val APP_NAME = "BillNova"
+    const val APP_SHORT_NAME = "BN"
+    const val APP_TAGLINE = "Smart Billing. Smarter Business."
     const val APP_VERSION = "1.0.0"
 
     // Database Constants
@@ -44,8 +45,8 @@ object AppConstants {
     const val KEY_ACCENT_COLOR_HEX = "accent_color_hex"
 
     // Default Values
-    const val DEFAULT_BUSINESS_NAME = "SmartBiz Commercial Store"
-    const val DEFAULT_BUSINESS_TAGLINE = "Modern Business Billing & Inventory"
+    const val DEFAULT_BUSINESS_NAME = "BillNova Store"
+    const val DEFAULT_BUSINESS_TAGLINE = "Smart Billing. Smarter Business."
     const val DEFAULT_CURRENCY = "$"
     const val DEFAULT_TAX_RATE = 10.0f
     const val DEFAULT_INVOICE_PREFIX = "INV-"

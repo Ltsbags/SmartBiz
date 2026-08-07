@@ -15,7 +15,7 @@ class QrPaymentService {
         invoiceNumber: String = "",
         note: String = ""
     ): String {
-        val encodedName = URLEncoder.encode(merchantName.ifBlank { "SmartBiz Store" }, "UTF-8")
+        val encodedName = URLEncoder.encode(merchantName.ifBlank { "BillNova Store" }, "UTF-8")
         val txnNote = URLEncoder.encode(if (invoiceNumber.isNotBlank()) "Invoice #$invoiceNumber" else note.ifBlank { "Store Payment" }, "UTF-8")
         val txnRef = "QR" + System.currentTimeMillis()
         return "upi://pay?pa=$vpa&pn=$encodedName&am=$amount&cu=$currency&tr=$txnRef&tn=$txnNote"

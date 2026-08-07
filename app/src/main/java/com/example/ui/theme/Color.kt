@@ -2,29 +2,29 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// SmartBiz Brand Colors (Prompt #2 Specification)
-val Primary = Color(0xFF1565C0)
-val PrimaryLightColor = Color(0xFF42A5F5)
-val Secondary = Color(0xFF26A69A)
-val Success = Color(0xFF2E7D32)
-val Warning = Color(0xFFF9A825)
-val ErrorColor = Color(0xFFD32F2F)
-val BackgroundLight = Color(0xFFF7F9FC)
+// BillNova Brand Colors Specification
+val Primary = Color(0xFF2563EB) // Primary Royal Blue
+val PrimaryLightColor = Color(0xFF3B82F6)
+val Secondary = Color(0xFF10B981) // Secondary Emerald Green
+val Success = Color(0xFF10B981)
+val Warning = Color(0xFFF59E0B)
+val ErrorColor = Color(0xFFEF4444)
+val BackgroundLight = Color(0xFFFFFFFF) // Clean White Background
 val SurfaceLight = Color(0xFFFFFFFF)
-val DividerColor = Color(0xFFE5E7EB)
-val TextPrimary = Color(0xFF111827)
-val TextSecondary = Color(0xFF6B7280)
+val DividerColor = Color(0xFFE2E8F0)
+val TextPrimary = Color(0xFF1E293B) // Dark Slate Text
+val TextSecondary = Color(0xFF64748B)
 
 // Light Palette Material 3 Mapping
 val PrimaryLight = Primary
 val OnPrimaryLight = Color(0xFFFFFFFF)
-val PrimaryContainerLight = Color(0xFFE3F2FD)
-val OnPrimaryContainerLight = Color(0xFF0D47A1)
+val PrimaryContainerLight = Color(0xFFDBEAFE)
+val OnPrimaryContainerLight = Color(0xFF1E40AF)
 
 val SecondaryLight = Secondary
 val OnSecondaryLight = Color(0xFFFFFFFF)
-val SecondaryContainerLight = Color(0xFFE0F2F1)
-val OnSecondaryContainerLight = Color(0xFF004D40)
+val SecondaryContainerLight = Color(0xD1D1FADF)
+val OnSecondaryContainerLight = Color(0xFF065F46)
 
 val TertiaryLight = Color(0xFF0288D1)
 val OnTertiaryLight = Color(0xFFFFFFFF)

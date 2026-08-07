@@ -270,7 +270,7 @@ class SettingsViewModel(
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                val fileName = "SmartBiz_${dataType}_$timeStamp.csv"
+                val fileName = "BillNova_${dataType}_$timeStamp.csv"
                 val file = File(context.cacheDir, fileName)
                 file.writeText("Header1,Header2,Header3\nValue1,Value2,Value3\n")
                 

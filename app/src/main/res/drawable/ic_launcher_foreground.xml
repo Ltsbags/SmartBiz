@@ -3,10 +3,12 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Stylized Letter 'B' with Receipt Edge -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M34,26 C31.8,26 30,27.8 30,30 L30,78 L36,74 L42,78 L48,74 L54,78 L60,74 L66,78 L72,74 L78,78 L78,30 C78,27.8 76.2,26 74,26 L34,26 Z M38,36 L70,36 L70,40 L38,40 L38,36 Z M38,46 L62,46 L62,50 L38,50 L38,46 Z M38,56 L54,56 L54,60 L38,60 L38,56 Z M62,56 L70,56 L70,64 L62,64 L62,56 Z" />
+        android:pathData="M32,24 C29.8,24 28,25.8 28,28 L28,80 C28,82.2 29.8,84 32,84 L56,84 C67,84 76,75 76,64 C76,57.5 72.8,51.8 68,48.2 C71.8,45 74,40.2 74,35 C74,28.9 69.1,24 63,24 L32,24 Z M38,32 L60,32 C61.7,32 63,33.3 63,35 C63,36.7 61.7,38 60,38 L38,38 L38,32 Z M38,46 L60,46 C61.7,46 63,47.3 63,49 C63,50.7 61.7,52 60,52 L38,52 L38,46 Z M38,60 L54,60 C55.7,60 57,61.3 57,63 C57,64.7 55.7,66 54,66 L38,66 L38,60 Z" />
+    <!-- Integrated Emerald Green Checkmark -->
     <path
-        android:fillColor="#818CF8"
-        android:pathData="M64,58 L68,58 L68,62 L64,62 Z" />
+        android:fillColor="#10B981"
+        android:pathData="M52,68 L44,60 L47.5,56.5 L52,61 L64.5,48.5 L68,52 Z" />
 </vector>

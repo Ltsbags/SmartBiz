@@ -68,7 +68,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun SmartBizTheme(
+fun BillNovaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false, // Keep brand identity intact
     content: @Composable () -> Unit
@@ -93,4 +93,13 @@ fun SmartBizTheme(
             content = content
         )
     }
+}
+
+@Composable
+fun SmartBizTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    BillNovaTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
 }

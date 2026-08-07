@@ -732,7 +732,7 @@ private fun AboutSection(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            SectionHeader(icon = Icons.Default.Info, title = "About SmartBiz")
+            SectionHeader(icon = Icons.Default.Info, title = "About BillNova")
 
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -867,7 +867,7 @@ private fun SecuritySection(
 
             SwitchRow(
                 title = "Require Application Lock PIN",
-                subtitle = "Require PIN verification when launching or reopening SmartBiz",
+                subtitle = "Require PIN verification when launching or reopening BillNova",
                 checked = state.isAppLockEnabled,
                 onCheckedChange = { viewModel.toggleAppLock(it) }
             )

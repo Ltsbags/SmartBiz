@@ -4,7 +4,7 @@ import java.security.MessageDigest
 
 object SecurityUtils {
 
-    private const val PIN_SALT = "SmartBizSecurePinSalt_2026_V1"
+    private const val PIN_SALT = "BillNovaSecurePinSalt_2026_V1"
 
     /**
      * Generates a secure SHA-256 hash for a given 4-digit or 6-digit PIN.

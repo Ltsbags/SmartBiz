@@ -1211,7 +1211,7 @@ abstract class AppDatabase : RoomDatabase() {
                     sku = "SKU-POS-V20",
                     barcode = "8901234567892",
                     category = "Hardware",
-                    brand = "SmartBiz",
+                    brand = "BillNova",
                     description = "Dual-screen Android POS with integrated receipt printer & NFC.",
                     unit = "pcs",
                     purchasePrice = 260.00,

@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "SmartBiz"
+rootProject.name = "BillNova"
 
 include(":app")

@@ -57,7 +57,7 @@ fun CommercialAppBar(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Text(
-                            text = businessName.take(1).uppercase().ifEmpty { "S" },
+                            text = businessName.take(1).uppercase().ifEmpty { "B" },
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -67,7 +67,7 @@ fun CommercialAppBar(
                 Spacer(modifier = Modifier.width(Spacing.m))
                 Column {
                     Text(
-                        text = businessName.ifEmpty { "SmartBiz Store" },
+                        text = businessName.ifEmpty { "BillNova Store" },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface

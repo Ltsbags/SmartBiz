@@ -6,7 +6,7 @@ data class PaymentGatewayConfig(
     val secretKey: String = "",
     val merchantId: String = "",
     val upiVpa: String = "store@upi",
-    val upiName: String = "SmartBiz Store",
+    val upiName: String = "BillNova Store",
     val isTestMode: Boolean = true,
     val currency: String = "INR"
 )

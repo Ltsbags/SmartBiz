@@ -7,21 +7,21 @@ object PublicApiSdkSpec {
         {
           "openapi": "3.0.3",
           "info": {
-            "title": "SmartBiz Enterprise Public API",
-            "description": "Secure Public REST API Platform for SmartBiz ERP. Enables third-party integrations, SaaS tools, and marketplace extensions.",
+            "title": "BillNova Enterprise Public API",
+            "description": "Secure Public REST API Platform for BillNova ERP. Enables third-party integrations, SaaS tools, and marketplace extensions.",
             "version": "1.0.0",
             "contact": {
-              "name": "SmartBiz Developer Support",
-              "email": "dev-support@smartbiz.io"
+              "name": "BillNova Developer Support",
+              "email": "dev-support@billnova.io"
             }
           },
           "servers": [
             {
-              "url": "https://api.smartbiz.io/v1",
+              "url": "https://api.billnova.io/v1",
               "description": "Production API Server"
             },
             {
-              "url": "https://sandbox-api.smartbiz.io/v1",
+              "url": "https://sandbox-api.billnova.io/v1",
               "description": "Sandbox / Test Server"
             }
           ],
@@ -130,11 +130,11 @@ object PublicApiSdkSpec {
         import 'package:http/http.dart' as http;
         import 'dart:convert';
 
-        class SmartBizClient {
+        class BillNovaClient {
           final String apiKey;
           final String baseUrl;
 
-          SmartBizClient({required this.apiKey, this.baseUrl = 'https://api.smartbiz.io/v1'});
+          BillNovaClient({required this.apiKey, this.baseUrl = 'https://api.billnova.io/v1'});
 
           Future<List<dynamic>> getInvoices() async {
             final response = await http.get(
@@ -162,8 +162,8 @@ object PublicApiSdkSpec {
         import java.net.URL
         import javax.net.ssl.HttpsURLConnection
 
-        class SmartBizPublicSdk(private val apiKey: String) {
-            private val baseUrl = "https://api.smartbiz.io/v1"
+        class BillNovaPublicSdk(private val apiKey: String) {
+            private val baseUrl = "https://api.billnova.io/v1"
 
             fun getInvoices(): String {
                 val url = URL("${'$'}baseUrl/invoices")

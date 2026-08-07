@@ -16,7 +16,7 @@ object BiometricAuthHelper {
 
     fun promptBiometric(
         activity: FragmentActivity,
-        title: String = "SmartBiz Security Lock",
+        title: String = "BillNova Security Lock",
         subtitle: String = "Authenticate to unlock your business app",
         onSuccess: () -> Unit,
         onError: (String) -> Unit

@@ -21,7 +21,7 @@ class EncryptionService {
         private const val ITERATIONS = 10000
         private const val KEY_SIZE_BITS = 256
 
-        private const val DEFAULT_MASTER_SEED = "SmartBizEnterpriseSecuritySeed_V1_2026"
+        private const val DEFAULT_MASTER_SEED = "BillNovaEnterpriseSecuritySeed_V1_2026"
     }
 
     private var currentKeyVersion = 1

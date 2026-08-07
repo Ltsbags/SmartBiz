@@ -30,9 +30,9 @@ class PaymentLinkService(
         }
         val paymentLink = baseUrl + requestNo
 
-        val encodedDesc = URLEncoder.encode(request.description.ifBlank { "SmartBiz Store Invoice ${request.invoiceNumber}" }, "UTF-8")
+        val encodedDesc = URLEncoder.encode(request.description.ifBlank { "BillNova Store Invoice ${request.invoiceNumber}" }, "UTF-8")
         val upiVpa = "store@upi"
-        val upiQrPayload = "upi://pay?pa=$upiVpa&pn=SmartBiz&am=${request.amount}&cu=${request.currency}&tr=$requestNo&tn=$encodedDesc"
+        val upiQrPayload = "upi://pay?pa=$upiVpa&pn=BillNova&am=${request.amount}&cu=${request.currency}&tr=$requestNo&tn=$encodedDesc"
 
         val entity = PaymentRequestEntity(
             requestNumber = requestNo,
@@ -58,7 +58,7 @@ class PaymentLinkService(
 
     fun buildShareableText(requestEntity: PaymentRequestEntity): String {
         return """
-            *SmartBiz Payment Request*
+            *BillNova Payment Request*
             Dear ${requestEntity.customerName.ifBlank { "Customer" }},
             Invoice #${requestEntity.invoiceNumber.ifBlank { "N/A" }}
             Amount Due: ${requestEntity.amount} INR

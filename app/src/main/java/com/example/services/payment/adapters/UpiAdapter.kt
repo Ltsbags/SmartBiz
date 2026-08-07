@@ -64,8 +64,8 @@ class UpiAdapter : PaymentGatewayAdapter {
     }
 
     private fun generateUpiUri(request: PaymentEngineRequest): String {
-        val encodedName = URLEncoder.encode(config.upiName.ifBlank { "SmartBiz Store" }, "UTF-8")
-        val note = URLEncoder.encode(if (request.invoiceNumber.isNotBlank()) "Invoice ${request.invoiceNumber}" else request.description.ifBlank { "SmartBiz Payment" }, "UTF-8")
+        val encodedName = URLEncoder.encode(config.upiName.ifBlank { "BillNova Store" }, "UTF-8")
+        val note = URLEncoder.encode(if (request.invoiceNumber.isNotBlank()) "Invoice ${request.invoiceNumber}" else request.description.ifBlank { "BillNova Payment" }, "UTF-8")
         val txnRef = "TXN" + System.currentTimeMillis()
         return "upi://pay?pa=${config.upiVpa}&pn=$encodedName&am=${request.amount}&cu=${config.currency}&tr=$txnRef&tn=$note"
     }
